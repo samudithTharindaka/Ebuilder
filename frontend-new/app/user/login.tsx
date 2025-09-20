@@ -1,68 +1,89 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, Button } from "react-native";
+import { View, TextInput, TouchableOpacity, Text } from "react-native";
+import { Image } from "expo-image";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
+  const [emailOrUsername, setEmailOrUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    // TODO: Add your login logic
-    if (email && password) {
-      router.push("../home");
-    } else {
-      alert("Please enter email and password");
-    }
+    // Add your login logic here
+    console.log("Logging in with:", emailOrUsername, password);
+  };
+
+  const handleCancel = () => {
+    setEmailOrUsername("");
+    setPassword("");
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Login</ThemedText>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+    <ThemedView className="flex-1 bg-white px-6 pt-12">
+      {/* Header Image */}
+      <Image
+        source={require("@/assets/images/image-1.png")}
+        className="w-full h-40 mb-6"
+        contentFit="contain"
       />
 
+      {/* Title */}
+      <ThemedText type="title" className="text-2xl font-bold mb-1">
+        Constructions with Sustainable Development
+      </ThemedText>
+      <ThemedText className="text-gray-500 mb-6">
+        For easily manage all constructions
+      </ThemedText>
+      <ThemedText className="text-gray-400 mb-4">Try new features</ThemedText>
+
+      {/* Username / Email */}
+      <ThemedText className="mb-1 font-medium">Username or email</ThemedText>
       <TextInput
-        style={styles.input}
-        placeholder="Password"
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+        placeholder="Enter username or email"
+        value={emailOrUsername}
+        onChangeText={setEmailOrUsername}
+      />
+
+      {/* Password */}
+      <ThemedText className="mb-1 font-medium">Password</ThemedText>
+      <TextInput
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-6"
+        placeholder="Enter password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <Button title="Login" onPress={handleLogin} />
+      {/* Buttons */}
+      <View className="flex-row justify-between mb-6">
+        <TouchableOpacity
+          className="flex-1 bg-green-400 py-3 rounded-xl mr-2 items-center"
+          onPress={handleLogin}
+        >
+          <Text className="text-black font-semibold">Login</Text>
+        </TouchableOpacity>
 
-      <Link href="/register">
-        <ThemedText style={styles.link}>Don't have an account? Register</ThemedText>
-      </Link>
+        <TouchableOpacity
+          className="flex-1 bg-green-400 py-3 rounded-xl ml-2 items-center"
+          onPress={handleCancel}
+        >
+          <Text className="text-black font-semibold">Cancel</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Sign Up */}
+      <Text className="text-center text-gray-400">
+        Not registered yet? go and{" "}
+        <Text
+          className="text-green-500 underline"
+          onPress={() => router.push("/user/register")}
+        >
+          sign up
+        </Text>
+      </Text>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-    gap: 12,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
-  },
-  link: {
-    marginTop: 12,
-    color: "#0B638B",
-    textAlign: "center",
-  },
-});

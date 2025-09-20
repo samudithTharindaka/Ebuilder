@@ -1,69 +1,117 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, Button } from "react-native";
+import { View, TextInput, TouchableOpacity, Text } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function RegisterScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleRegister = () => {
-    // TODO: Add registration logic
-    if (email && password) {
-      alert("Account created!");
-      router.push("/login");
-    } else {
-      alert("Please enter email and password");
-    }
-  };
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"manager" | "worker" | "owner" | null>(null);
+
+  // const handleRegister = () => {
+  //   if (!name || !username || !email || !role) {
+  //     alert("Please fill in all fields and select a role.");
+  //     return;
+  //   }
+  //   alert(`Registered as ${role} ✅`);
+  //   router.push("/login");
+  // };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Register</ThemedText>
+    <ThemedView className="flex-1 bg-white px-6 pt-12">
+      {/* Title */}
+      <ThemedText
+        type="title"
+        className="text-2xl font-bold mb-6 text-green-600"
+      >
+        Sign up
+      </ThemedText>
 
+      {/* Name */}
+      <ThemedText className="mb-1 font-medium">Name</ThemedText>
       <TextInput
-        style={styles.input}
-        placeholder="Email"
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+        placeholder="Enter your name"
+        value={name}
+        onChangeText={setName}
+      />
+
+      {/* Username */}
+      <ThemedText className="mb-1 font-medium">Username</ThemedText>
+      <TextInput
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+        placeholder="Choose a username"
+        value={username}
+        onChangeText={setUsername}
+      />
+
+      {/* Email */}
+      <ThemedText className="mb-1 font-medium">Email</ThemedText>
+      <TextInput
+        className="border border-gray-300 rounded-xl px-4 py-3 mb-6"
+        placeholder="Enter your email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      {/* Role Selection */}
+      <ThemedText className="mb-2 font-medium">You Are</ThemedText>
+      <View className="gap-3 mb-6">
+        {[
+          { label: "Project Manager", value: "manager" },
+          { label: "Worker", value: "worker" },
+          { label: "Project Owner", value: "owner" },
+        ].map((item) => (
+          <TouchableOpacity
+            key={item.value}
+            onPress={() => setRole(item.value as any)}
+            className="flex-row items-center"
+          >
+            {/* Checkbox circle */}
+            <View
+              className={`w-5 h-5 rounded-full border mr-3 ${
+                role === item.value
+                  ? "bg-green-400 border-green-500"
+                  : "border-gray-400"
+              }`}
+            />
+            {/* Label */}
+            <Text
+              className={
+                role === item.value
+                  ? "text-green-600 font-semibold"
+                  : "text-gray-700"
+              }
+            >
+              {item.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-      <Button title="Register" onPress={handleRegister} />
+      {/* Next Button */}
+      <TouchableOpacity
+        className="bg-green-400 py-3 rounded-xl items-center mb-6"
+        onPress={() => router.push("/user/createPassword")}
+      >
+        <Text className="text-black font-semibold">Next</Text>
+      </TouchableOpacity>
 
-      <Link href="/login">
-        <ThemedText style={styles.link}>Already have an account? Login</ThemedText>
-      </Link>
+      {/* Login Redirect */}
+      <Text className="text-center text-gray-400">
+        Already registered?{" "}
+        <Text
+          className="text-green-500 underline"
+          onPress={() => router.push("/user/login")}
+        >
+          log in
+        </Text>
+      </Text>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-    gap: 12,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
-  },
-  link: {
-    marginTop: 12,
-    color: "#0B638B",
-    textAlign: "center",
-  },
-});
